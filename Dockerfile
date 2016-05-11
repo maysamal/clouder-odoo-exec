@@ -17,13 +17,15 @@ RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys B97B0AFCAA1A47F044F
 # most dependencies are distributed as wheel packages at the next step
 RUN echo "deb http://apt.postgresql.org/pub/repos/apt/ trusty-pgdg main" > /etc/apt/sources.list.d/pgdg.list && apt-get update && apt-get -yq install adduser ghostscript postgresql-client-9.4 python python-pip libjpeg-dev libfreetype6-dev zlib1g-dev libpng12-dev python-imaging python-pychart python-libxslt1 xfonts-base xfonts-75dpi libxrender1 libxext6 fontconfig python-zsi python-lasso libzmq3 gdebi libxslt1-dev libxml2-dev libxml2 libxslt1.1 python-dev libpq-dev libffi-dev libldap2-dev libssl-dev libsasl2-dev openssh-client python-paramiko
 
+RUN pip install --upgrade setuptools
 ADD sources/pip-checksums.txt /opt/sources/pip-checksums.txt
 # use wheels from our public wheelhouse for proper versions of listed packages
 # as described in sourced pip-req.txt
 # these are python dependencies for odoo and "apps" as precompiled wheel packages
 
 RUN pip install --upgrade --force-reinstall -r /opt/sources/pip-checksums.txt
-RUN pip install erppeek
+
+RUN pip install paramiko erppeek
 
 # must unzip this package to make it visible as an odoo external dependency
 RUN easy_install -UZ py3o.template==0.9.5
